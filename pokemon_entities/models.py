@@ -15,11 +15,14 @@ class PokemonEntity(models.Model):
     Lat = models.FloatField()
     Lon = models.FloatField()
 
-    Appeared_at = models.DateTimeField(default=None)
-    Disappeared_at = models.DateTimeField(default=None)
+    Appeared_at = models.DateTimeField(null=True, blank=True)
+    Disappeared_at = models.DateTimeField(null=True, blank=True)
 
-    Level = models.IntegerField(default=None)
-    Health = models.IntegerField(default=None)
-    Strength = models.IntegerField(default=None)
-    Defence = models.IntegerField(default=None)
-    Stamina = models.IntegerField(default=None)
+    Level = models.IntegerField(null=True, blank=True)
+    Health = models.IntegerField(null=True, blank=True)
+    Strength = models.IntegerField(null=True, blank=True)
+    Defence = models.IntegerField(null=True, blank=True)
+    Stamina = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.Lat}, {self.Lon} - {self.Pokemon}'

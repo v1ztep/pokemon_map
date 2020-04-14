@@ -54,6 +54,22 @@ def show_pokemon(request, pokemon_id):
 
         pokemon = []
         for pokemon_entity in pokemon_entitys:
+            previous_evolution = ''
+            if Pokemon.objects.filter(title=pokemon_entity.Pokemon.previous_evolution).count() > 0:
+                previous_evolution = {
+                    "title_ru": pokemon_entity.Pokemon.previous_evolution.title,
+                    "pokemon_id": pokemon_entity.Pokemon.previous_evolution.id,
+                    "img_url": request.build_absolute_uri(pokemon_entity.Pokemon.previous_evolution.image.url)
+                }
+
+            next_evolution = ''
+            if pokemon_entity.Pokemon.next_evolutions.all().count() > 0:
+                next_evolution = {
+                    "title_ru": pokemon_entity.Pokemon.next_evolutions.first().title,
+                    "pokemon_id": pokemon_entity.Pokemon.next_evolutions.first().id,
+                    "img_url": request.build_absolute_uri(pokemon_entity.Pokemon.next_evolutions.first().image.url)
+                }
+
             pokemon.append({
                 "pokemon_id": pokemon_entity.Pokemon.id,
                 "title_ru": pokemon_entity.Pokemon.title,
@@ -61,8 +77,8 @@ def show_pokemon(request, pokemon_id):
                 "title_jp": pokemon_entity.Pokemon.title_jp,
                 "description": pokemon_entity.Pokemon.description,
                 "img_url": request.build_absolute_uri(pokemon_entity.Pokemon.image.url),
-                "entities": "",
-                "next_evolution": ""
+                "previous_evolution": previous_evolution,
+                "next_evolution": next_evolution
             })
             break
     else:

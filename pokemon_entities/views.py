@@ -48,40 +48,40 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    if Pokemon.objects.filter(id=pokemon_id).count() > 0:
-        pokemon_entitys = PokemonEntity.objects.filter(pokemon__id=pokemon_id)
-
-        pokemon = []
-        for pokemon_entity in pokemon_entitys:
-            previous_evolution = ''
-            if Pokemon.objects.filter(title=pokemon_entity.pokemon.previous_evolution).count() > 0:
-                previous_evolution = {
-                    "title_ru": pokemon_entity.pokemon.previous_evolution.title,
-                    "pokemon_id": pokemon_entity.pokemon.previous_evolution.id,
-                    "img_url": request.build_absolute_uri(pokemon_entity.pokemon.previous_evolution.image.url)
-                }
-
-            next_evolution = ''
-            if pokemon_entity.pokemon.next_evolutions.all().count() > 0:
-                next_evolution = {
-                    "title_ru": pokemon_entity.pokemon.next_evolutions.first().title,
-                    "pokemon_id": pokemon_entity.pokemon.next_evolutions.first().id,
-                    "img_url": request.build_absolute_uri(pokemon_entity.pokemon.next_evolutions.first().image.url)
-                }
-
-            pokemon.append({
-                "pokemon_id": pokemon_entity.pokemon.id,
-                "title_ru": pokemon_entity.pokemon.title,
-                "title_en": pokemon_entity.pokemon.title_en,
-                "title_jp": pokemon_entity.pokemon.title_jp,
-                "description": pokemon_entity.pokemon.description,
-                "img_url": request.build_absolute_uri(pokemon_entity.pokemon.image.url),
-                "previous_evolution": previous_evolution,
-                "next_evolution": next_evolution
-            })
-            break
-    else:
+    if not Pokemon.objects.filter(id=pokemon_id).count() > 0:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+
+    pokemon_entitys = PokemonEntity.objects.filter(pokemon__id=pokemon_id)
+
+    pokemon = []
+    for pokemon_entity in pokemon_entitys:
+        previous_evolution = ''
+        if Pokemon.objects.filter(title=pokemon_entity.pokemon.previous_evolution).count() > 0:
+            previous_evolution = {
+                "title_ru": pokemon_entity.pokemon.previous_evolution.title,
+                "pokemon_id": pokemon_entity.pokemon.previous_evolution.id,
+                "img_url": request.build_absolute_uri(pokemon_entity.pokemon.previous_evolution.image.url)
+            }
+
+        next_evolution = ''
+        if pokemon_entity.pokemon.next_evolutions.all().count() > 0:
+            next_evolution = {
+                "title_ru": pokemon_entity.pokemon.next_evolutions.first().title,
+                "pokemon_id": pokemon_entity.pokemon.next_evolutions.first().id,
+                "img_url": request.build_absolute_uri(pokemon_entity.pokemon.next_evolutions.first().image.url)
+            }
+
+        pokemon.append({
+            "pokemon_id": pokemon_entity.pokemon.id,
+            "title_ru": pokemon_entity.pokemon.title,
+            "title_en": pokemon_entity.pokemon.title_en,
+            "title_jp": pokemon_entity.pokemon.title_jp,
+            "description": pokemon_entity.pokemon.description,
+            "img_url": request.build_absolute_uri(pokemon_entity.pokemon.image.url),
+            "previous_evolution": previous_evolution,
+            "next_evolution": next_evolution
+        })
+        break
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemon_entitys:

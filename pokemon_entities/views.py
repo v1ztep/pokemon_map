@@ -1,7 +1,6 @@
 import folium
 
-from django.http import HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Pokemon, PokemonEntity
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -48,8 +47,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    if not Pokemon.objects.filter(id=pokemon_id).count() > 0:
-        return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+    get_object_or_404(Pokemon, id=pokemon_id)
 
     pokemon_entitys = PokemonEntity.objects.filter(pokemon__id=pokemon_id)
 

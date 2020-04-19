@@ -8,7 +8,7 @@ class Pokemon(models.Model):
     title_en = models.CharField(max_length=20, default='', blank=True, verbose_name='Имя покемона на английском')
     title_jp = models.CharField(max_length=20, default='', blank=True, verbose_name='Имя покемона на японском')
     previous_evolution = models.ForeignKey("self", on_delete=models.SET_NULL,
-                                           related_name='next_evolutions',
+                                           related_name='next_evolution',
                                            null=True, blank=True,
                                            verbose_name='Из кого эволюционирует')
 
@@ -18,7 +18,7 @@ class Pokemon(models.Model):
 
 class PokemonEntity(models.Model):
     pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE,
-                                related_name='pokemon', verbose_name='Название покемона')
+                                related_name='entities', verbose_name='Название покемона')
 
     lat = models.FloatField(verbose_name='Широта')
     lon = models.FloatField(verbose_name='Долгота')

@@ -64,7 +64,7 @@ def show_pokemon(request, pokemon_id):
         }
 
     next_evolution = ''
-    if pokemon_entity.pokemon.next_evolution.all().count() > 0:
+    if pokemon_entity.pokemon.next_evolution.exists():
         next_evolution = {
             "title_ru": pokemon_entity.pokemon.next_evolution.first().title,
             "pokemon_id": pokemon_entity.pokemon.next_evolution.first().id,

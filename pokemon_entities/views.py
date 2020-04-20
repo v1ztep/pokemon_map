@@ -49,9 +49,9 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     get_object_or_404(Pokemon, id=pokemon_id)
 
-    pokemon_show = Pokemon.objects.get(id=pokemon_id)
-    pokemon_entities = pokemon_show.entities.all()
-    pokemon_entity = pokemon_show.entities.prefetch_related()[0]
+    displayed_pokemon = Pokemon.objects.get(id=pokemon_id)
+    pokemon_entities = displayed_pokemon.entities.all()
+    pokemon_entity = displayed_pokemon.entities.prefetch_related()[0]
 
     pokemon = []
 
@@ -72,12 +72,12 @@ def show_pokemon(request, pokemon_id):
         }
 
     pokemon.append({
-        "pokemon_id": pokemon_entity.pokemon.id,
-        "title_ru": pokemon_entity.pokemon.title,
-        "title_en": pokemon_entity.pokemon.title_en,
-        "title_jp": pokemon_entity.pokemon.title_jp,
-        "description": pokemon_entity.pokemon.description,
-        "img_url": request.build_absolute_uri(pokemon_entity.pokemon.image.url),
+        "pokemon_id": displayed_pokemon.id,
+        "title_ru": displayed_pokemon.title,
+        "title_en": displayed_pokemon.title_en,
+        "title_jp": displayed_pokemon.title_jp,
+        "description": displayed_pokemon.description,
+        "img_url": request.build_absolute_uri(displayed_pokemon.image.url),
         "previous_evolution": previous_evolution,
         "next_evolution": next_evolution
     })

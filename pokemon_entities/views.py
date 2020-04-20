@@ -49,7 +49,7 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     get_object_or_404(Pokemon, id=pokemon_id)
 
-    displayed_pokemon = Pokemon.objects.get(id=pokemon_id)
+    displayed_pokemon = Pokemon.objects.select_related('previous_evolution').get(id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
 
     pokemon = []
@@ -65,9 +65,9 @@ def show_pokemon(request, pokemon_id):
     next_evolution = ''
     if displayed_pokemon.next_evolution.exists():
         next_evolution = {
-            "title_ru": displayed_pokemon.next_evolution.first().title,
-            "pokemon_id": displayed_pokemon.next_evolution.first().id,
-            "img_url": request.build_absolute_uri(displayed_pokemon.next_evolution.first().image.url)
+            "title_ru": displayed_pokemon.next_evolution.get().title,
+            "pokemon_id": displayed_pokemon.next_evolution.get().id,
+            "img_url": request.build_absolute_uri(displayed_pokemon.next_evolution.get().image.url)
         }
 
     pokemon.append({

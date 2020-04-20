@@ -64,10 +64,11 @@ def show_pokemon(request, pokemon_id):
 
     next_evolution = ''
     if displayed_pokemon.next_evolution.exists():
+        next_evolution_pokemon = displayed_pokemon.next_evolution.select_related().get()
         next_evolution = {
-            "title_ru": displayed_pokemon.next_evolution.get().title,
-            "pokemon_id": displayed_pokemon.next_evolution.get().id,
-            "img_url": request.build_absolute_uri(displayed_pokemon.next_evolution.get().image.url)
+            "title_ru": next_evolution_pokemon.title,
+            "pokemon_id": next_evolution_pokemon.id,
+            "img_url": request.build_absolute_uri(next_evolution_pokemon.image.url)
         }
 
     pokemon.append({

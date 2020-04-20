@@ -51,24 +51,23 @@ def show_pokemon(request, pokemon_id):
 
     displayed_pokemon = Pokemon.objects.get(id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
-    pokemon_entity = displayed_pokemon.entities.prefetch_related()[0]
 
     pokemon = []
 
     previous_evolution = ''
-    if pokemon_entity.pokemon.previous_evolution:
+    if displayed_pokemon.previous_evolution:
         previous_evolution = {
-            "title_ru": pokemon_entity.pokemon.previous_evolution.title,
-            "pokemon_id": pokemon_entity.pokemon.previous_evolution.id,
-            "img_url": request.build_absolute_uri(pokemon_entity.pokemon.previous_evolution.image.url)
+            "title_ru": displayed_pokemon.previous_evolution.title,
+            "pokemon_id": displayed_pokemon.previous_evolution.id,
+            "img_url": request.build_absolute_uri(displayed_pokemon.previous_evolution.image.url)
         }
 
     next_evolution = ''
-    if pokemon_entity.pokemon.next_evolution.exists():
+    if displayed_pokemon.next_evolution.exists():
         next_evolution = {
-            "title_ru": pokemon_entity.pokemon.next_evolution.first().title,
-            "pokemon_id": pokemon_entity.pokemon.next_evolution.first().id,
-            "img_url": request.build_absolute_uri(pokemon_entity.pokemon.next_evolution.first().image.url)
+            "title_ru": displayed_pokemon.next_evolution.first().title,
+            "pokemon_id": displayed_pokemon.next_evolution.first().id,
+            "img_url": request.build_absolute_uri(displayed_pokemon.next_evolution.first().image.url)
         }
 
     pokemon.append({

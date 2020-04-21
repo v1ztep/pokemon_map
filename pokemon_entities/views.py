@@ -49,7 +49,7 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     get_object_or_404(Pokemon, id=pokemon_id)
 
-    displayed_pokemon = Pokemon.objects.select_related('previous_evolution').prefetch_related('next_evolution').get(id=pokemon_id)
+    displayed_pokemon = Pokemon.objects.prefetch_related('previous_evolution', 'next_evolution').get(id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
 
     pokemon = []

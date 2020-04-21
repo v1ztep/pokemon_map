@@ -49,7 +49,7 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     get_object_or_404(Pokemon, id=pokemon_id)
 
-    displayed_pokemon = Pokemon.objects.select_related('previous_evolution').get(id=pokemon_id)
+    displayed_pokemon = Pokemon.objects.select_related('previous_evolution').prefetch_related('next_evolution').get(id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
 
     pokemon = []
@@ -64,7 +64,7 @@ def show_pokemon(request, pokemon_id):
 
     next_evolution = ''
     if displayed_pokemon.next_evolution.exists():
-        next_evolution_pokemon = displayed_pokemon.next_evolution.select_related().get()
+        next_evolution_pokemon = displayed_pokemon.next_evolution.all()[0]
         next_evolution = {
             "title_ru": next_evolution_pokemon.title,
             "pokemon_id": next_evolution_pokemon.id,

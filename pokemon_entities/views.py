@@ -61,6 +61,8 @@ def show_pokemon(request, pokemon_id):
         }
 
     next_evolution = ''
+    # ШАГ 23 в правке противоречит цели (не создавать больше запросов), exists() и all()[0] не выдают новый запрос к БД (мы же вытащили через prefetch все нужные данные), тогда как first() создаёт новый запрос для упорядочивания по первичному ключу
+    # пруфы в телеге от @v1ztep
     if displayed_pokemon.next_evolutions.exists():
         next_evolution_pokemon = displayed_pokemon.next_evolutions.all()[0]
         next_evolution = {

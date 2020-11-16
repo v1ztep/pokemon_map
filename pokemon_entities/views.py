@@ -2,19 +2,21 @@ import folium
 
 from django.shortcuts import render, get_object_or_404
 from .models import Pokemon, PokemonEntity
+from transliterate import translit
 
 MOSCOW_CENTER = [55.751244, 37.618423]
 DEFAULT_IMAGE_URL = "https://vignette.wikia.nocookie.net/pokemon/images/6/6e/%21.png/revision/latest/fixed-aspect-ratio-down/width/240/height/240?cb=20130525215832&fill=transparent"
 
 
-def add_pokemon(folium_map, lat, lon, name, image_url=DEFAULT_IMAGE_URL):
+def add_pokemon(folium_map, lat, lon, name, level, image_url=DEFAULT_IMAGE_URL):
     icon = folium.features.CustomIcon(
         image_url,
         icon_size=(50, 50),
     )
     folium.Marker(
         [lat, lon],
-        tooltip=name,
+        tooltip=translit(name, 'ru', reversed=True)+": "+str(level)+"lvl.",
+        popup=translit(name, 'ru', reversed=True)+": "+str(level)+"lvl."+"Elements:",
         icon=icon,
     ).add_to(folium_map)
 
@@ -24,7 +26,8 @@ def show_all_pokemons(request):
     for pokemon_entity in PokemonEntity.objects.all():
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
-            pokemon_entity.pokemon.title, request.build_absolute_uri(pokemon_entity.pokemon.image.url))
+            pokemon_entity.pokemon.title, pokemon_entity.level,
+            request.build_absolute_uri(pokemon_entity.pokemon.image.url))
 
     pokemons_on_page = []
     for pokemon in Pokemon.objects.all():
@@ -84,7 +87,8 @@ def show_pokemon(request, pokemon_id):
     for pokemon_entity in pokemon_entities:
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
-            pokemon_entity.pokemon.title, request.build_absolute_uri(pokemon_entity.pokemon.image.url))
+            pokemon_entity.pokemon.title, pokemon_entity.level,
+            request.build_absolute_uri(pokemon_entity.pokemon.image.url))
 
     return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),
                                                     'pokemon': pokemon[0]})

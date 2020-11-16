@@ -41,7 +41,5 @@ class PokemonEntity(models.Model):
 class PokemonElementType(models.Model):
     title = models.CharField(max_length=20, verbose_name='Стихия')
 
-    pokemon = models.ManyToManyField("Pokemon", verbose_name='Название покемона')
-
     def __str__(self):
         return self.title

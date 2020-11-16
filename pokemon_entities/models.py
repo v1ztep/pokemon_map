@@ -12,6 +12,8 @@ class Pokemon(models.Model):
                                            null=True, blank=True,
                                            verbose_name='Из кого эволюционирует')
 
+    element_type = models.ManyToManyField("PokemonElementType", related_name='elements', verbose_name='Стихия покемона')
+
     def __str__(self):
         return self.title
 
@@ -34,3 +36,12 @@ class PokemonEntity(models.Model):
 
     def __str__(self):
         return f'{self.lat}, {self.lon}, {self.pokemon}'
+
+
+class PokemonElementType(models.Model):
+    title = models.CharField(max_length=20, verbose_name='Стихия')
+
+    pokemon = models.ManyToManyField("Pokemon", verbose_name='Название покемона')
+
+    def __str__(self):
+        return self.title

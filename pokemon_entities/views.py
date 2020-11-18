@@ -123,25 +123,3 @@ def show_pokemon(request, pokemon_id):
     return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),
                                                     'pokemon': pokemon[0]})
 
-
-
-    # python manage.py shell
-    # from pokemon_entities.models import Pokemon, PokemonEntity
-    # from transliterate import translit
-    #
-    # for pokemon_entity in PokemonEntity.objects.all():
-    #     elements_type_title_and_image_url_list = []
-    #     if pokemon_entity.pokemon.element_type.exists():
-    #         for element_type in pokemon_entity.pokemon.element_type.all():
-    #             title_and_image_url_list = [element_type.title, element_type.image.url]
-    #             elements_type_title_and_image_url_list.append(title_and_image_url_list)
-
-
-
-
-
-
-
-
-
-

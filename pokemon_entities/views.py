@@ -73,10 +73,9 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution', 'next_evolutions'), id=pokemon_id)
+    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution', 'next_evolutions'),
+                                          id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
-
-    pokemon = []
 
     previous_evolution = ''
     if displayed_pokemon.previous_evolution:
@@ -95,6 +94,16 @@ def show_pokemon(request, pokemon_id):
             "img_url": request.build_absolute_uri(next_evolution_pokemon.image.url)
         }
 
+    elements_type_dicts_list = []
+    if displayed_pokemon.element_type.exists():
+        elements_type = displayed_pokemon.element_type.only("img", "title")
+        for element_type in elements_type:
+            elements_type_dicts_list.append({
+                "img": request.build_absolute_uri(element_type.img.url),
+                "title": element_type.title,
+            })
+
+    pokemon = []
     pokemon.append({
         "pokemon_id": displayed_pokemon.id,
         "title_ru": displayed_pokemon.title,
@@ -103,7 +112,8 @@ def show_pokemon(request, pokemon_id):
         "description": displayed_pokemon.description,
         "img_url": request.build_absolute_uri(displayed_pokemon.image.url),
         "previous_evolution": previous_evolution,
-        "next_evolution": next_evolution
+        "next_evolution": next_evolution,
+        "element_type": elements_type_dicts_list,
     })
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)

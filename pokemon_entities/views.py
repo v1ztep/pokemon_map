@@ -21,8 +21,8 @@ def add_pokemon(folium_map, lat, lon, name, level, elements_type_list, image_url
 
     if elements_type_list:
         elements_list = []
-        for title, image_url in elements_type_list:
-            elements_list.append(f'<p style="margin:0"><img src="{image_url}"/>'
+        for title, img_url in elements_type_list:
+            elements_list.append(f'<p style="margin:0"><img src="{img_url}"/>'
                                  f'{translit(title, "ru", reversed=True)}</p>')
         elements_type_str = convert_list_to_string(elements_list)
     else:
@@ -43,7 +43,7 @@ def show_all_pokemons(request):
         elements_type_list = []
         if pokemon_entity.pokemon.element_type.exists():
             for element_type in pokemon_entity.pokemon.element_type.all():
-                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.image.url)]
+                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.img.url)]
                 elements_type_list.append(title_and_image_url_list)
 
         add_pokemon(
@@ -73,8 +73,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution', 'next_evolutions'),
-                                          id=pokemon_id)
+    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution', 'next_evolutions'), id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
 
     pokemon = []
@@ -112,7 +111,7 @@ def show_pokemon(request, pokemon_id):
         elements_type_list = []
         if pokemon_entity.pokemon.element_type.exists():
             for element_type in pokemon_entity.pokemon.element_type.all():
-                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.image.url)]
+                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.img.url)]
                 elements_type_list.append(title_and_image_url_list)
 
         add_pokemon(

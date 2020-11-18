@@ -40,7 +40,7 @@ class PokemonEntity(models.Model):
 
 class PokemonElementType(models.Model):
     title = models.CharField(max_length=20, verbose_name='Стихия')
-    image = models.ImageField(null=True, blank=True, verbose_name='Картинка')
+    img = models.ImageField(null=True, verbose_name='Картинка стихии')
 
     def __str__(self):
         return self.title

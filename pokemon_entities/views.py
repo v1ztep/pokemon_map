@@ -19,20 +19,19 @@ def add_pokemon(folium_map, lat, lon, name, level, elements_types, image_url=DEF
         icon_size=(50, 50),
     )
 
+    elements_html_paragraphs = ''
     if elements_types:
-        elements_title_img = []
+        elements_html_paragraphs = []
         for title, img_url in elements_types:
-            elements_title_img.append(f'<p style="margin:0"><img src="{img_url}"/>'
+            elements_html_paragraphs.append(f'<p style="margin:0"><img src="{img_url}"/>'
                                  f'{translit(title, "ru", reversed=True)}</p>')
-        elements_types = convert_list_to_string(elements_title_img)
-    else:
-        elements_types = ''
+        elements_html_paragraphs = convert_list_to_string(elements_html_paragraphs)
 
     folium.Marker(
         [lat, lon],
         tooltip=translit(name, 'ru', reversed=True)+":"+str(level)+"lvl.",
         popup="<p style='margin:5px'> <b>"+translit(name, 'ru', reversed=True)+":"+str(level)+"</b>"+f"_lvl_</p>"
-              +elements_types,
+              +elements_html_paragraphs,
         icon=icon,
     ).add_to(folium_map)
 

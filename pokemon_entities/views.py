@@ -40,15 +40,15 @@ def add_pokemon(folium_map, lat, lon, name, level, elements_types, image_url=DEF
 def show_all_pokemons(request):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in PokemonEntity.objects.all():
-        elements_type_list = []
+        elements_types = []
         if pokemon_entity.pokemon.element_type.exists():
             for element_type in pokemon_entity.pokemon.element_type.all():
                 title_and_image_url = [element_type.title, request.build_absolute_uri(element_type.img.url)]
-                elements_type_list.append(title_and_image_url)
+                elements_types.append(title_and_image_url)
 
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
-            pokemon_entity.pokemon.title, pokemon_entity.level, elements_type_list,
+            pokemon_entity.pokemon.title, pokemon_entity.level, elements_types,
             request.build_absolute_uri(pokemon_entity.pokemon.image.url))
 
 

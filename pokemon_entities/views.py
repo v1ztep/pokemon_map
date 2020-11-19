@@ -13,26 +13,26 @@ def convert_list_to_string(org_list, seperator=' '):
     return seperator.join(org_list)
 
 
-def add_pokemon(folium_map, lat, lon, name, level, elements_type_list, image_url=DEFAULT_IMAGE_URL):
+def add_pokemon(folium_map, lat, lon, name, level, elements_types, image_url=DEFAULT_IMAGE_URL):
     icon = folium.features.CustomIcon(
         image_url,
         icon_size=(50, 50),
     )
 
-    if elements_type_list:
-        elements_list = []
-        for title, img_url in elements_type_list:
-            elements_list.append(f'<p style="margin:0"><img src="{img_url}"/>'
+    if elements_types:
+        elements_title_img = []
+        for title, img_url in elements_types:
+            elements_title_img.append(f'<p style="margin:0"><img src="{img_url}"/>'
                                  f'{translit(title, "ru", reversed=True)}</p>')
-        elements_type_str = convert_list_to_string(elements_list)
+        elements_types = convert_list_to_string(elements_title_img)
     else:
-        elements_type_str = ''
+        elements_types = ''
 
     folium.Marker(
         [lat, lon],
         tooltip=translit(name, 'ru', reversed=True)+":"+str(level)+"lvl.",
         popup="<p style='margin:5px'> <b>"+translit(name, 'ru', reversed=True)+":"+str(level)+"</b>"+f"_lvl_</p>"
-              +elements_type_str,
+              +elements_types,
         icon=icon,
     ).add_to(folium_map)
 
@@ -43,8 +43,8 @@ def show_all_pokemons(request):
         elements_type_list = []
         if pokemon_entity.pokemon.element_type.exists():
             for element_type in pokemon_entity.pokemon.element_type.all():
-                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.img.url)]
-                elements_type_list.append(title_and_image_url_list)
+                title_and_image_url = [element_type.title, request.build_absolute_uri(element_type.img.url)]
+                elements_type_list.append(title_and_image_url)
 
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
@@ -52,23 +52,23 @@ def show_all_pokemons(request):
             request.build_absolute_uri(pokemon_entity.pokemon.image.url))
 
 
-    pokemons_on_page_list = []
+    pokemons_on_page = []
     for pokemon in Pokemon.objects.all():
         if pokemon.image:
-            pokemons_on_page_list.append({
+            pokemons_on_page.append({
                 'pokemon_id': pokemon.id,
                 'title_ru': pokemon.title,
                 'img_url': pokemon.image.url
             })
         else:
-            pokemons_on_page_list.append({
+            pokemons_on_page.append({
                 'pokemon_id': pokemon.id,
                 'title_ru': pokemon.title,
             })
 
     return render(request, "mainpage.html", context={
         'map': folium_map._repr_html_(),
-        'pokemons': pokemons_on_page_list,
+        'pokemons': pokemons_on_page,
     })
 
 
@@ -94,11 +94,11 @@ def show_pokemon(request, pokemon_id):
             "img_url": request.build_absolute_uri(next_evolution_pokemon.image.url)
         }
 
-    elements_type_dicts_list = []
+    pokemon_elements_types = []
     if displayed_pokemon.element_type.exists():
-        elements_type = displayed_pokemon.element_type.only("img", "title")
-        for element_type in elements_type:
-            elements_type_dicts_list.append({
+        elements_types = displayed_pokemon.element_type.only("img", "title")
+        for element_type in elements_types:
+            pokemon_elements_types.append({
                 "img": request.build_absolute_uri(element_type.img.url),
                 "title": element_type.title,
             })
@@ -113,20 +113,20 @@ def show_pokemon(request, pokemon_id):
         "img_url": request.build_absolute_uri(displayed_pokemon.image.url),
         "previous_evolution": previous_evolution,
         "next_evolution": next_evolution,
-        "element_type": elements_type_dicts_list,
+        "element_type": pokemon_elements_types,
     })
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemon_entities:
-        elements_type_list = []
+        elements_types = []
         if pokemon_entity.pokemon.element_type.exists():
             for element_type in pokemon_entity.pokemon.element_type.all():
-                title_and_image_url_list = [element_type.title, request.build_absolute_uri(element_type.img.url)]
-                elements_type_list.append(title_and_image_url_list)
+                title_and_image_url = [element_type.title, request.build_absolute_uri(element_type.img.url)]
+                elements_types.append(title_and_image_url)
 
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
-            pokemon_entity.pokemon.title, pokemon_entity.level, elements_type_list,
+            pokemon_entity.pokemon.title, pokemon_entity.level, elements_types,
             request.build_absolute_uri(pokemon_entity.pokemon.image.url))
 
     return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),

@@ -12,7 +12,7 @@ class Pokemon(models.Model):
                                            null=True, blank=True,
                                            verbose_name='Из кого эволюционирует')
 
-    element_type = models.ManyToManyField("PokemonElementType", related_name='elements', verbose_name='Стихия покемона')
+    element_type = models.ManyToManyField("PokemonElementType", verbose_name='Стихия покемона')
 
     def __str__(self):
         return self.title
@@ -41,6 +41,8 @@ class PokemonEntity(models.Model):
 class PokemonElementType(models.Model):
     title = models.CharField(max_length=20, verbose_name='Стихия')
     img = models.ImageField(null=True, verbose_name='Картинка стихии')
+
+    strong_against = models.ManyToManyField("self", symmetrical=False, verbose_name="Силён против")
 
     def __str__(self):
         return self.title

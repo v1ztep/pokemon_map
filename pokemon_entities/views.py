@@ -72,7 +72,10 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution', 'next_evolutions'),
+    displayed_pokemon = get_object_or_404(Pokemon.objects.prefetch_related('previous_evolution',
+                                                                           'next_evolutions',
+                                                                           'element_type',
+                                                                           'element_type__strong_against'),
                                           id=pokemon_id)
     pokemon_entities = displayed_pokemon.entities.all()
 
@@ -95,13 +98,13 @@ def show_pokemon(request, pokemon_id):
 
     pokemon_elements_types = []
     if displayed_pokemon.element_type.exists():
-        elements_types = displayed_pokemon.element_type.only("img", "title")
+        elements_types = displayed_pokemon.element_type.all()
         for element_type in elements_types:
             pokemon_elements_types.append({
                 "img": request.build_absolute_uri(element_type.img.url),
                 "title": element_type.title,
-                "strong_against": list(strong_against[0] for strong_against
-                                   in element_type.strong_against.values_list("title"))
+                "strong_against": list(strong_against.title for strong_against
+                                       in element_type.strong_against.all())
             })
 
     pokemon = []
